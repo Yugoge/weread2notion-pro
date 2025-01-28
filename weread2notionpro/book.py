@@ -41,13 +41,13 @@ def insert_book_to_notion(books, index, book_id):
         book["My Rating"] = rating.get(book.get("newRatingDetail").get("myRating"))
     elif status == "Complete":
         book["My Rating"] = "Not Rated"
-    book["Time"] = (
+    book["Date"] = (
         book.get("finishedDate")
         or book.get("lastReadingDate")
         or book.get("readingBookDate")
     )
-    book["Start Reading Time"] = book.get("beginReadingDate")
-    book["Last Reading Time"] = book.get("lastReadingDate")
+    book["Start Reading Date"] = book.get("beginReadingDate")
+    book["Last Reading Date"] = book.get("lastReadingDate")
     cover = book.get("cover").replace("/s_", "/t7_")
     if not cover or not cover.strip() or not cover.startswith("http"):
         cover = BOOK_ICON_URL
