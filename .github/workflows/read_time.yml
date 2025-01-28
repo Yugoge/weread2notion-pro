@@ -33,18 +33,10 @@ jobs:
       REPOSITORY: ${{ github.repository }}
       YEAR: ${{ vars.YEAR }}
     steps:
-      - name: Delete GitHub Actions Cache
-        run: |
-          echo "Cleaning cache..."
-          rm -rf ~/.cache/pip
-          rm -rf ~/.cache/pypoetry
-          rm -rf ~/.npm
-          rm -rf ~/.yarn
-          rm -rf ~/.rustup
-          rm -rf ~/.cargo
-          rm -rf ~/.nvm
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 确保获取所有提交记录
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
