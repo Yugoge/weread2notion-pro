@@ -41,7 +41,7 @@ class NotionHelper:
         "MONTH_DATABASE_NAME": "Month",
         "YEAR_DATABASE_NAME": "Year",
         "CATEGORY_DATABASE_NAME": "Categories",
-        "AUTHOR_DATABASE_NAME": "Authors",
+        "AUTHOR_DATABASE_NAME": "Author",
         "CHAPTER_DATABASE_NAME": "Chapters",
         "READ_DATABASE_NAME": "Reading Records",
         "SETTING_DATABASE_NAME": "Settings",
