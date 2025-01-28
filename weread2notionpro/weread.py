@@ -227,7 +227,7 @@ def append_blocks_to_notion(id, blocks, after, contents):
 weread_api = WeReadApi()
 notion_helper = NotionHelper()
 def main():
-    notion_books = notion_helper
+    notion_books = notion_helper.get_all_book()
     books = weread_api.get_notebooklist()
     if books != None:
         for index, book in enumerate(books):
