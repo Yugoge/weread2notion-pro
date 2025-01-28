@@ -4,4 +4,4 @@ github-heatmap
 retrying
 pendulum
 python-dotenv
-weread2notionpro
+git+https://github.com/Yugoge/weread2notion-pro.git
