@@ -20,10 +20,10 @@ setup(
     },
     author="malinkang",
     author_email="linkang.ma@gmail.com",
-    description="Automatically synchronize WeChat book notes and reading history to Notion",
+    description="Automatically synchronize Weread notes and reading history to Notion",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/malinkang/weread2notion-pro",
+    url="https://github.com/Yugoge/weread2notion-pro",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
