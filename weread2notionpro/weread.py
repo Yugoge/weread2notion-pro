@@ -11,12 +11,11 @@ from weread2notionpro.utils import (
     get_table_of_contents,
 )
 
-
 def get_bookmark_list(page_id, bookId):
-    """获取我的划线"""
+    """Get my highlights"""
     filter = {
         "and": [
-            {"property": "书籍", "relation": {"contains": page_id}},
+            {"property": "Books", "relation": {"contains": page_id}},
             {"property": "blockId", "rich_text": {"is_not_empty": True}},
         ]
     }
@@ -39,12 +38,11 @@ def get_bookmark_list(page_id, bookId):
         notion_helper.delete_block(dict2.get(blockId))
     return bookmarks
 
-
-def get_review_list(page_id,bookId):
-    """获取笔记"""
+def get_review_list(page_id, bookId):
+    """Get my notes"""
     filter = {
         "and": [
-            {"property": "书籍", "relation": {"contains": page_id}},
+            {"property": "Books", "relation": {"contains": page_id}},
             {"property": "blockId", "rich_text": {"is_not_empty": True}},
         ]
     }
@@ -65,9 +63,8 @@ def get_review_list(page_id,bookId):
         notion_helper.delete_block(dict2.get(blockId))
     return reviews
 
-
 def check(bookId):
-    """检查是否已经插入过"""
+    """Check if already inserted"""
     filter = {"property": "BookId", "rich_text": {"equals": bookId}}
     response = notion_helper.query(
         database_id=notion_helper.book_database_id, filter=filter
@@ -76,9 +73,8 @@ def check(bookId):
         return response["results"][0]["id"]
     return None
 
-
 def get_sort():
-    """获取database中的最新时间"""
+    """Get the latest sort from the database"""
     filter = {"property": "Sort", "number": {"is_not_empty": True}}
     sorts = [
         {
@@ -96,10 +92,8 @@ def get_sort():
         return response.get("results")[0].get("properties").get("Sort").get("number")
     return 0
 
-
-
 def sort_notes(page_id, chapter, bookmark_list):
-    """对笔记进行排序"""
+    """Sort notes"""
     bookmark_list = sorted(
         bookmark_list,
         key=lambda x: (
@@ -111,8 +105,8 @@ def sort_notes(page_id, chapter, bookmark_list):
     )
 
     notes = []
-    if chapter != None:
-        filter = {"property": "书籍", "relation": {"contains": page_id}}
+    if chapter is not None:
+        filter = {"property": "Books", "relation": {"contains": page_id}}
         results = notion_helper.query_all_by_book(
             notion_helper.chapter_database_id, filter
         )
@@ -142,9 +136,8 @@ def sort_notes(page_id, chapter, bookmark_list):
         notes.extend(bookmark_list)
     return notes
 
-
 def append_blocks(id, contents):
-    print(f"笔记数{len(contents)}")
+    print(f"Number of notes: {len(contents)}")
     before_block_id = ""
     block_children = notion_helper.get_block_children(id)
     if len(block_children) > 0 and block_children[0].get("type") == "table_of_contents":
@@ -164,7 +157,7 @@ def append_blocks(id, contents):
             l.extend(results)
             blocks.clear()
             sub_contents.clear()
-            if not notion_helper.sync_bookmark and content.get("type")==0:
+            if not notion_helper.sync_bookmark and content.get("type") == 0:
                 continue
             blocks.append(content_to_block(content))
             sub_contents.append(content)
@@ -177,15 +170,15 @@ def append_blocks(id, contents):
                 sub_contents.clear()
             before_block_id = content["blockId"]
         else:
-            if not notion_helper.sync_bookmark and content.get("type")==0:
+            if not notion_helper.sync_bookmark and content.get("type") == 0:
                 continue
             blocks.append(content_to_block(content))
             sub_contents.append(content)
-    
+
     if len(blocks) > 0:
         l.extend(append_blocks_to_notion(id, blocks, before_block_id, sub_contents))
     for index, value in enumerate(l):
-        print(f"正在插入第{index+1}条笔记，共{len(l)}条")
+        print(f"Inserting note {index + 1} of {len(l)}")
         if "bookmarkId" in value:
             notion_helper.insert_bookmark(id, value)
         elif "reviewId" in value:
@@ -193,11 +186,10 @@ def append_blocks(id, contents):
         else:
             notion_helper.insert_chapter(id, value)
 
-
 def content_to_block(content):
     if "bookmarkId" in content:
         return get_block(
-            content.get("markText",""),
+            content.get("markText", ""),
             notion_helper.block_type,
             notion_helper.show_color,
             content.get("style"),
@@ -206,7 +198,7 @@ def content_to_block(content):
         )
     elif "reviewId" in content:
         return get_block(
-            content.get("content",""),
+            content.get("content", ""),
             notion_helper.block_type,
             notion_helper.show_color,
             content.get("style"),
@@ -216,7 +208,6 @@ def content_to_block(content):
     else:
         return get_heading(content.get("level"), content.get("title"))
 
-
 def append_blocks_to_notion(id, blocks, after, contents):
     response = notion_helper.append_blocks_after(
         block_id=id, children=blocks, after=after
@@ -225,7 +216,7 @@ def append_blocks_to_notion(id, blocks, after, contents):
     l = []
     for index, content in enumerate(contents):
         result = results[index]
-        if content.get("abstract") != None and content.get("abstract") != "":
+        if content.get("abstract") is not None and content.get("abstract") != "":
             notion_helper.append_blocks(
                 block_id=result.get("id"), children=[get_quote(content.get("abstract"))]
             )
@@ -236,7 +227,7 @@ def append_blocks_to_notion(id, blocks, after, contents):
 weread_api = WeReadApi()
 notion_helper = NotionHelper()
 def main():
-    notion_books = notion_helper.get_all_book()
+    notion_books = notion_helper
     books = weread_api.get_notebooklist()
     if books != None:
         for index, book in enumerate(books):
@@ -248,7 +239,7 @@ def main():
             if sort == notion_books.get(bookId).get("Sort"):
                 continue
             pageId = notion_books.get(bookId).get("pageId")
-            print(f"正在同步《{title}》,一共{len(books)}本，当前是第{index+1}本。")
+            print(f"Synchronizing {title}, a total of {len(books)}, currently at {index+1}.")
             chapter = weread_api.get_chapter_info(bookId)
             bookmark_list = get_bookmark_list(pageId, bookId)
             reviews = get_review_list(pageId,bookId)
