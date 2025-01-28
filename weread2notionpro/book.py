@@ -20,7 +20,7 @@ def insert_book_to_notion(books, index, book_id):
     if book_info != None:
         book.update(book_info)
     read_info = weread_api.get_read_info(book_id)
-    # Researched that this status is unknown in some cases, even when read, the status is still 1 markedStatus = 1 Want to Read 4 Finished Reading Others are Reading
+    # Researched that this status is unknown in some cases, even when read, the status is still 1 markedStatus = 1 To-do 4 Complete Others are In Progress
     read_info.update(read_info.get("readDetail", {}))
     read_info.update(read_info.get("bookInfo", {}))
     book.update(read_info)
@@ -28,18 +28,18 @@ def insert_book_to_notion(books, index, book_id):
         100 if (book.get("markedStatus") == 4) else book.get("readingProgress", 0)
     ) / 100
     marked_status = book.get("markedStatus")
-    status = "Want to Read"
+    status = "To-do"
     if marked_status == 4:
-        status = "Read"
+        status = "Complete"
     elif book.get("readingTime", 0) >= 60:
-        status = "Reading"
+        status = "In Progress"
     book["Reading Status"] = status
     book["Reading Time"] = book.get("readingTime")
     book["Reading Days"] = book.get("totalReadDay")
     book["Rating"] = book.get("newRating")
     if book.get("newRatingDetail") and book.get("newRatingDetail").get("myRating"):
         book["My Rating"] = rating.get(book.get("newRatingDetail").get("myRating"))
-    elif status == "Read":
+    elif status == "Complete":
         book["My Rating"] = "Not Rated"
     book["Time"] = (
         book.get("finishedDate")
@@ -170,8 +170,8 @@ def main():
             and (archive_dict.get(key) == value.get("category"))
             and (value.get("cover") is not None)
             and (
-                value.get("status") != "Read"
-                or (value.get("status") == "Read" and value.get("myRating"))
+                value.get("status") != "Complete"
+                or (value.get("status") == "Complete" and value.get("myRating"))
             )
         ):
             not_need_sync.append(key)
