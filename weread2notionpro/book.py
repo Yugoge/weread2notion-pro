@@ -71,10 +71,10 @@ def insert_book_to_notion(books, index, book_id):
                 for x in book.get("categories")
             ]
     properties = utils.get_properties(book, book_properties_type_dict)
-    if book.get("Time"):
+    if book.get("时间"):
         notion_helper.get_date_relation(
             properties,
-            pendulum.from_timestamp(book.get("Time"), tz="Asia/Shanghai"),
+            pendulum.from_timestamp(book.get("时间"), tz="Asia/Shanghai"),
         )
 
     print(
