@@ -22,7 +22,7 @@ book_properties_type_dict = {
     "Reading Time": NUMBER,
     "Reading Progress": NUMBER,
     "Reading Days": NUMBER,
-    "Time": DATE,
+    "Date": DATE,
     "Start Reading Date": DATE,
     "Last Reading Date": DATE,
     "Introduction": RICH_TEXT,
