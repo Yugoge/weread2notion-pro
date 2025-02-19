@@ -75,7 +75,7 @@ def get_file():
         return None
 
 def get_fresh_url(original_url):
-    timestamp = int(datetime.datetime.now().timestamp())  
+    timestamp = int(datetime.now().timestamp())  
     return f"{original_url}?t={timestamp}"  # 避免 GitHub 和 Notion 缓存
 
 HEATMAP_GUIDE = "https://mp.weixin.qq.com/s?__biz=MzI1OTcxOTI4NA==&mid=2247484145&idx=1&sn=81752852420b9153fc292b7873217651&chksm=ea75ebeadd0262fc65df100370d3f983ba2e52e2fcde2deb1ed49343fbb10645a77570656728&token=157143379&lang=en_US#rd"
